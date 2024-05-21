@@ -9,4 +9,5 @@ CheckRule "$SQL >= 8" BLOCK;
 CheckRule "$RFI >= 8" BLOCK;
 CheckRule "$TRAVERSAL >= 4" BLOCK;
 CheckRule "$EVADE >= 4" BLOCK;
-CheckRule "$XSS >= 100" BLOCK;
+CheckRule "$XSS >= 8" BLOCK;
+CheckRule "$UPLOAD >= 8" BLOCK;

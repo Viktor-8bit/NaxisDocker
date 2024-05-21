@@ -28,10 +28,10 @@ RUN mkdir /naxis_install && \
                          --with-http_ssl_module \
                          --add-dynamic-module=/naxis_install/naxsi/naxsi_src \
     && make \
-    && make install && \
-    cp /naxis_install/naxsi/naxsi_rules/naxsi_core.rules /etc/nginx/
+    && make install \ 
+    && cp /naxis_install/naxsi/naxsi_rules/naxsi_core.rules /etc/nginx/
 
-RUN rm /etc/nginx/nginx.conf && \
+    RUN rm /etc/nginx/nginx.conf && \
 cat <<EOF > /etc/nginx/nginx.conf
 load_module /usr/local/nginx/modules/ngx_http_naxsi_module.so;
 worker_processes  1;
@@ -42,24 +42,30 @@ http {
     include /etc/nginx/naxsi_core.rules;
     include       mime.types;
     default_type  application/octet-stream;
-    sendfile        on;
     keepalive_timeout  65;
     server {
         listen 80;
         server_name 127.0.0.1;
         location / {
-                proxy_pass http://127.0.0.1:3000;
+                add_header Referrer-Policy same-origin;
+                add_header X-Frame-Options SAMEORIGIN;
+                add_header X-Content-Type-Options nosniff;
+                add_header X-XSS-Protection "1; mode=block";
+                add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' http://cdnjs.cloudflare.com; ";
+                proxy_pass http://172.17.0.6:3000;
+                proxy_http_version 1.1;
+                # proxy_set_header Upgrade $http_upgrade;
+                # proxy_set_header Connection "Upgrade";
                 # proxy_set_header Host $host;
-                # proxy_set_header X-Real-IP $remote_addr;
-                # proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                # proxy_set_header X-Forwarded-Proto $scheme;
-                # proxy_ssl_verify off;
                 include /etc/nginx/my_rules.rules;
+                error_page 500 /etc/nginx/error_pages/500.html;
+                proxy_intercept_errors on;
         }
     }
 }
 EOF
 
 COPY my_rules.rules /etc/nginx/
+COPY naxsi_rules.rules /etc/nginx/
 
 CMD ["nginx", "-g", "daemon off;"]
