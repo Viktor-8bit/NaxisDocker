@@ -1,0 +1,27 @@
+
+
+
+services:
+  web-app:
+    image: bkimminich/juice-shop:latest
+    container_name: web-app
+    ports:
+      - "3000:3000"
+    networks:
+          waf_network:
+            ipv4_address: 172.31.100.11
+
+  waf:
+    image: containerninjadev/nginx-naxsi:last  
+    container_name: waf
+    ports:
+      - "80:80"
+    networks:
+      waf_network:
+        ipv4_address: 172.31.100.7
+    depends_on:
+      - web-app
+
+networks:
+  waf_network:
+    external: true  
