@@ -52,7 +52,7 @@ http {
                 add_header X-Content-Type-Options nosniff;
                 add_header X-XSS-Protection "1; mode=block";
                 add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' http://cdnjs.cloudflare.com; ";
-                proxy_pass http://172.17.0.6:3000;
+                proxy_pass http://172.31.100.11:3000;
                 proxy_http_version 1.1;
                 # proxy_set_header Upgrade $http_upgrade;
                 # proxy_set_header Connection "Upgrade";
