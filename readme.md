@@ -12,7 +12,7 @@ docker exec -it [hash контейнера] bash
 2. вносим изменения в naxsi_core.rules в git 
 
 ### Можно использовать docker-compose.yml
-## Для этого создать подсеть
+#### Для этого создать подсеть
 docker network create --subnet=172.31.100.0/24 waf_network
-## Потом поднять контейнеры
+#### Потом поднять контейнеры
 docker-compose up -d       
